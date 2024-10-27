@@ -49,6 +49,26 @@ void AShooterGameMode::SetServerParameters(FServerParameters& OutServerParameter
 	UE_LOG(LogShooterGameMode, Log, TEXT("PID: %s"), *OutServerParameters.m_processId);
 }
 
+void AShooterGameMode::ParseCommandLinePort(int32& OutPort)
+{
+	TArray<FString> CommandLineTokens;
+	TArray<FString> CommandLineSwitches;
+	FCommandLine::Parse(FCommandLine::Get(), CommandLineTokens, CommandLineSwitches);
+	for (const FString& Switch : CommandLineSwitches)
+	{
+		FString Key;
+		FString Value;
+		if (Switch.Split("=", &Key, &Value))
+		{
+			if (Key.Equals(TEXT("port"), ESearchCase::IgnoreCase))
+			{
+				OutPort = FCString::Atoi(*Value);
+				return;
+			}
+		}
+	}
+}
+
 void AShooterGameMode::InitGameLift()
 {
 	UE_LOG(LogShooterGameMode, Log, TEXT("Initializing the GameLift Server"));
@@ -89,6 +109,12 @@ void AShooterGameMode::InitGameLift()
 	};
 
 	ProcessParameters.OnHealthCheck.BindLambda(OnHealthCheck);
+
+	int32 Port = FURL::UrlConfig.DefaultPort;
+	ParseCommandLinePort(Port);
+
+	ProcessParameters.port = Port;
+	
 }
 
 
