@@ -82,7 +82,13 @@ void AShooterGameMode::InitGameLift()
 
 	ProcessParameters.OnTerminate.BindLambda(OnProcessTerminate);
 
-	
+	auto OnHealthCheck = []() 
+	{
+		UE_LOG(LogShooterGameMode, Log, TEXT("Performing Health Check"));
+		return true;
+	};
+
+	ProcessParameters.OnHealthCheck.BindLambda(OnHealthCheck);
 }
 
 
