@@ -114,7 +114,13 @@ void AShooterGameMode::InitGameLift()
 	ParseCommandLinePort(Port);
 
 	ProcessParameters.port = Port;
-	
+
+	TArray<FString> LogFiles;
+	LogFiles.Add(TEXT("FPSTemplate/Saved/Logs/FPSTemplate.log"));
+	ProcessParameters.logParameters = LogFiles;
+
+	UE_LOG(LogShooterGameMode, Log, TEXT("Calling Process Ready."));
+	GameLiftSdkModule->ProcessReady(ProcessParameters);
 }
 
 
