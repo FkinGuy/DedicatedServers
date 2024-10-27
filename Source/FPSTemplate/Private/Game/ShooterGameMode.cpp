@@ -74,6 +74,14 @@ void AShooterGameMode::InitGameLift()
 
 	ProcessParameters.OnStartGameSession.BindLambda(OnGameSession);
 
+	auto OnProcessTerminate = [=]()
+	{
+		UE_LOG(LogShooterGameMode, Log, TEXT("Game Server process is terminating."));
+		GameLiftSdkModule->ProcessEnding();
+	};
+
+	ProcessParameters.OnTerminate.BindLambda(OnProcessTerminate);
+
 	
 }
 
