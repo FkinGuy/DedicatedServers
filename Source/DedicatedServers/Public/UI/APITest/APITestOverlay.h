@@ -7,6 +7,7 @@
 #include "APITestOverlay.generated.h"
 
 class UListFleetsBox;
+class UFleetId;
 class UAPITestManager;
 struct FDSListFleetsResponse;
 /**
@@ -20,7 +21,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UAPITestManager> APITestManagerClass;
-	
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UFleetId> FleetIdWidgetClass;
 protected:
 	virtual void NativeConstruct() override;
 	
