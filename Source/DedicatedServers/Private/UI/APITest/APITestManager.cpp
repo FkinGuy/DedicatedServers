@@ -39,9 +39,12 @@ void UAPITestManager::ListFleets_Response(FHttpRequestPtr Request, FHttpResponse
             TSharedPtr<FJsonObject> MetaDataJsonObject = JsonObject->GetObjectField(TEXT("$metadata"));
             FDSMetaData DSMetaData;
             FJsonObjectConverter::JsonObjectToUStruct(MetaDataJsonObject.ToSharedRef(), &DSMetaData);
-
             DSMetaData.Dump();
         }
+
+        FDSListFleetsResponse ListFleetsResponse;
+        FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), &ListFleetsResponse);
+        ListFleetsResponse.Dump();
     }
 }
 
