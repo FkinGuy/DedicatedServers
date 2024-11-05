@@ -5,6 +5,7 @@
 #include "HttpModule.h"
 #include "Data/API/APIData.h"
 #include "GameplayTags/DedicatedServersTags.h"
+#include "Interfaces/IHttpResponse.h"
 
 void UAPITestManager::ListFleetsButtonClicked()
 {
@@ -26,4 +27,28 @@ void UAPITestManager::ListFleetsButtonClicked()
 void UAPITestManager::ListFleets_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "List Fleets Response Received");
+
+    TSharedPtr<FJsonObject> JsonObject;
+    TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+    if (FJsonSerializer::Deserialize(JsonReader, JsonObject))
+    {
+        if (JsonObject->HasField(TEXT("FleetIds")))
+        {
+            for (TSharedPtr<FJsonValue> Fleet : JsonObject->GetArrayField(TEXT("FleetIds")))
+            {
+                FString FleetString = Fleet->AsString();
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FleetString);
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
