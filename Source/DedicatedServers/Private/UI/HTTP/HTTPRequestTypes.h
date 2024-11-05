@@ -31,7 +31,7 @@ struct FDSListFleetsResponse
 	TArray<FString> FleetIds{};
 
 	UPROPERTY()
-	FString NextToken;
+	FString NextToken{};
 
 	void Dump() const;
 };
