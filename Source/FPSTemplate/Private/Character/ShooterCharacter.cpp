@@ -121,6 +121,15 @@ void AShooterCharacter::BeginPlay()
 	{
 		Combat->OnRoundReported.AddDynamic(EliminationComponent, &UEliminationComponent::OnRoundReported);
 	}
+	FTimerDelegate InitializeWidgetsDelegate;
+	InitializeWidgetsDelegate.BindLambda([&]
+	{
+		if (IsValid(Combat) && IsLocallyControlled())
+		{
+			Combat->InitializeWeaponWidgets();
+		}
+	});
+	GetWorldTimerManager().SetTimer(InitiializeWidgets_Timer, InitializeWidgetsDelegate, 0.5f, false);
 }
 
 void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
