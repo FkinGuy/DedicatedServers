@@ -24,13 +24,19 @@ void USignInOverlay::OnJoinGameButtonClicked()
 	check(IsValid(JoinGameWidget));
 	check(IsValid(JoinGameWidget->Button_JoinGame));
 
-	PortalManager->BroadcastJoinGameSessionMessage.AddDynamic(this, &USignInOverlay::UpdateJoinGamStatusMessage);
+	PortalManager->BroadcastJoinGameSessionMessage.AddDynamic(this, &USignInOverlay::UpdateJoinGameStatusMessage);
 	PortalManager->JoinGameSession();
 	JoinGameWidget->Button_JoinGame->SetIsEnabled(false);
 }
 
-void USignInOverlay::UpdateJoinGamStatusMessage(const FString& StatusMessage)
+void USignInOverlay::UpdateJoinGameStatusMessage(const FString& StatusMessage, bool bResetJoinGameButton)
 {
 	check(IsValid(JoinGameWidget));
+	check(IsValid(JoinGameWidget->Button_JoinGame));
 	JoinGameWidget->SetStatusMessage(StatusMessage);
+
+	if (bResetJoinGameButton)
+	{
+		JoinGameWidget->Button_JoinGame->SetIsEnabled(true);
+	}
 }

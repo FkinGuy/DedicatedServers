@@ -5,7 +5,6 @@
 #include "HttpModule.h"
 #include "JsonObjectConverter.h"
 #include "Data/API/APIData.h"
-#include "DedicatedServers/DedicatedServers.h"
 #include "GameplayTags/DedicatedServersTags.h"
 #include "Interfaces/IHttpResponse.h"
 #include "UI/HTTP/HTTPRequestTypes.h"
