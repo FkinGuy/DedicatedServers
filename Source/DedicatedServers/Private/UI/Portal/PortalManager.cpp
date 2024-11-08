@@ -110,7 +110,7 @@ void UPortalManager::TryCreatePlayerSession(const FString& PlayerId, const FStri
 
 void UPortalManager::CreatePlayerSession_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Create Player Session Response Received");
 }
 
 
