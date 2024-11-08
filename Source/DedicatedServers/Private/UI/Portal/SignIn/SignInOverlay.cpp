@@ -10,8 +10,10 @@ void USignInOverlay::NativeConstruct()
 {
 	Super::NativeConstruct();
 	check(PortalManagerClass);
+	check(IsValid(JoinGameWidget));
+	check(IsValid(JoinGameWidget->Button_JoinGame));
 	
-	PortalManager = NewObject<UPortalManager>(PortalManagerClass);
+	PortalManager = NewObject<UPortalManager>(this, PortalManagerClass);
 
 	JoinGameWidget->Button_JoinGame->OnClicked.AddDynamic(this, &USignInOverlay::OnJoinGameButtonClicked);
 }
@@ -19,6 +21,8 @@ void USignInOverlay::NativeConstruct()
 void USignInOverlay::OnJoinGameButtonClicked()
 {
 	check(IsValid(PortalManager));
+	check(IsValid(JoinGameWidget));
+	check(IsValid(JoinGameWidget->Button_JoinGame));
 
 	PortalManager->BroadcastJoinGameSessionMessage.AddDynamic(this, &USignInOverlay::UpdateJoinGamStatusMessage);
 	PortalManager->JoinGameSession();
@@ -27,5 +31,6 @@ void USignInOverlay::OnJoinGameButtonClicked()
 
 void USignInOverlay::UpdateJoinGamStatusMessage(const FString& StatusMessage)
 {
+	check(IsValid(JoinGameWidget));
 	JoinGameWidget->SetStatusMessage(StatusMessage);
 }
