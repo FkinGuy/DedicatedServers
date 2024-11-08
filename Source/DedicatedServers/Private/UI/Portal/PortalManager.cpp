@@ -6,4 +6,5 @@
 void UPortalManager::JoinGameSession()
 {
 	BroadcastJoinGameSessionMessage.Broadcast(TEXT("Searching for Game Session..."));
+	
 }
