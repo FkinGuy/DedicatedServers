@@ -25,6 +25,9 @@ public:
 	TObjectPtr<UButton> Button_Confirm;
 
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Button_Back;
+
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBlock_StatusMessage;
 
 	UPROPERTY(meta = (BindWidget))
