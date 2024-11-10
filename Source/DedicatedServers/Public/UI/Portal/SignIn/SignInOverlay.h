@@ -41,13 +41,13 @@ private:
 	TObjectPtr<USignInPage> SignInPage;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USignInPage> SignUpPage;
+	TObjectPtr<USignUpPage> SignUpPage;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USignInPage> ConfirmSignUpPage;
+	TObjectPtr<UConfirmSignUpPage> ConfirmSignUpPage;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USignInPage> SuccessConfirmedPage;
+	TObjectPtr<USuccessConfirmedPage> SuccessConfirmedPage;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_SignIn_Test;
