@@ -19,15 +19,11 @@ void USignInOverlay::NativeConstruct()
 	check(PortalManagerClass);
 	
 	PortalManager = NewObject<UPortalManager>(this, PortalManagerClass);
-
-	Button_SignIn_Test->OnClicked.AddDynamic(this, &USignInOverlay::ShowSignInPage);
-	Button_SignUp_Test->OnClicked.AddDynamic(this, &USignInOverlay::USignInOverlay::ShowSignUpPage);
-	Button_ConfirmSignUp_Test->OnClicked.AddDynamic(this, &USignInOverlay::USignInOverlay::USignInOverlay::ShowConfirmSignUpPage);
-	Button_SuccessConfirmed_Test->OnClicked.AddDynamic(this, &USignInOverlay::USignInOverlay::USignInOverlay::USignInOverlay::ShowSuccessConfirmedPage);
 	
 	SignInPage->Button_SignIn->OnClicked.AddDynamic(this, &USignInOverlay::SignInButtonClicked);
 	SignInPage->Button_SignUp->OnClicked.AddDynamic(this, &USignInOverlay::ShowSignUpPage);
 	SignInPage->Button_Quit->OnClicked.AddDynamic(PortalManager, &UPortalManager::QuitGame);
+	PortalManager->SignInStatusMessageDelegate.AddDynamic(SignInPage, &USignInPage::UpdateStatusMessage);	
 	
 	SignUpPage->Button_Back->OnClicked.AddDynamic(this, &USignInOverlay::USignInOverlay::ShowSignInPage);
 	SignUpPage->Button_SignUp->OnClicked.AddDynamic(this, &USignInOverlay::SignUpButtonClicked);
