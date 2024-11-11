@@ -16,7 +16,6 @@ class DEDICATEDSERVERS_API UPortalManager : public UHTTPRequestManager
 	GENERATED_BODY()
 public:
 	
-	
 	void SignIn(const FString& Username, const FString& Password);
 	void SignUp(const FString& Username, const FString& Password, const FString& Email);
 	void Confirm(const FString& ConfirmationCode);
@@ -24,6 +23,9 @@ public:
 	UFUNCTION()
 	void QuitGame();
 
+private:
+
+	void SignUp_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 };
 
 
