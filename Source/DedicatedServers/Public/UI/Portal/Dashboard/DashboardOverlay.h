@@ -33,13 +33,25 @@ public:
 	TObjectPtr<ULeaderboardPage> LeaderboardPage;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> GameButton;
+	TObjectPtr<UButton> Button_Game;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> CareerButton;
+	TObjectPtr<UButton> Button_Career;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> LeaderboardButton;
+	TObjectPtr<UButton> Button_Leaderboard;
+protected:
+	virtual void NativeConstruct() override;
+private:
+
+	UFUNCTION()
+	void ShowGamePage();
+	
+	UFUNCTION()
+	void ShowCareerPage();
+
+	UFUNCTION()
+	void ShowLeaderboardPage();
 };
 
 
