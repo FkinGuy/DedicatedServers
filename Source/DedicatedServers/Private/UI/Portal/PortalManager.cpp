@@ -9,6 +9,7 @@
 #include "GameplayTags/DedicatedServersTags.h"
 #include "Interfaces/IHttpResponse.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/DSLocalPlayerSubsystem.h"
 
 void UPortalManager::SignIn(const FString& Username, const FString& Password)
 {
@@ -50,8 +51,12 @@ void UPortalManager::SignIn_Response(FHttpRequestPtr Request, FHttpResponsePtr R
 
 		FDSInitiateAuthResponse InitiateAuthResponse;
 		FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), &InitiateAuthResponse);
-		InitiateAuthResponse.Dump();
-		
+
+		UDSLocalPlayerSubsystem* LocalPlayerSubsystem = GetDSLocalPlayerSubsystem();
+		if (IsValid(LocalPlayerSubsystem))
+		{
+			LocalPlayerSubsystem->InitializeTokens(InitiateAuthResponse.AuthenticationResult, this);
+		}
 	}
 }
 
