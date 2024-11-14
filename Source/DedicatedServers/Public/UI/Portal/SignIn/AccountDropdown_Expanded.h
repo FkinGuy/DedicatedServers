@@ -9,6 +9,7 @@
 class UButton;
 class UTextBlock;
 class UPortalManager;
+class UDSLocalPlayerSubsystem;
 UCLASS()
 class DEDICATEDSERVERS_API UAccountDropdown_Expanded : public UUserWidget
 {
@@ -20,6 +21,9 @@ public:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBlock_SignOutButtonText;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> TextBlock_Email;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FSlateColor HoveredTextColor;
@@ -48,4 +52,6 @@ private:
 	TObjectPtr<UPortalManager> PortalManager;
 
 	void SetSignOutButtonStyleTransparent();
+
+
 };

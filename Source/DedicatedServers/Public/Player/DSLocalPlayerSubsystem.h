@@ -19,6 +19,8 @@ public:
 	void InitializeTokens(const FDSAuthenticationResult& AuthResult, UPortalManager* Manager);
 	void SetRefreshTokenTimer();
 	void UpdateTokens(const FString& AccessToken, const FString& IdToken);
+	FDSAuthenticationResult GetAuthResult() const;
+
 private:
 	UPROPERTY()
 	FDSAuthenticationResult AuthenticationResult;
