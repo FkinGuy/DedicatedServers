@@ -17,6 +17,11 @@ void UAccountDropdown_Expanded::NativeConstruct()
 	Button_SignOut->OnHovered.AddDynamic(this, &UAccountDropdown_Expanded::SignOutButton_Hover);
 	Button_SignOut->OnUnhovered.AddDynamic(this, &UAccountDropdown_Expanded::SignOutButton_Unhover);
 
+	UDSLocalPlayerSubsystem* LocalPlayerSubsystem = GetLocalPlayerSubsystem();
+	if (IsValid(LocalPlayerSubsystem))
+	{
+		TextBlock_Email->SetText(FText::FromString(LocalPlayerSubsystem->Email));
+	}
 }
 
 void UAccountDropdown_Expanded::NativePreConstruct()
@@ -42,15 +47,11 @@ void UAccountDropdown_Expanded::SignOutButton_OnClicked()
 	Button_SignOut->SetIsEnabled(false);
 
 	check(PortalManager);
-	APlayerController* PlayerController = GetOwningPlayer();
-	if (IsValid(PlayerController) && IsValid(PlayerController->GetLocalPlayer()))
+	UDSLocalPlayerSubsystem* LocalPlayerSubsystem = GetLocalPlayerSubsystem();
+	if (IsValid(LocalPlayerSubsystem))
 	{
-		UDSLocalPlayerSubsystem* LocalPlayerSubsystem = PlayerController->GetLocalPlayer()->GetSubsystem<UDSLocalPlayerSubsystem>();
-		if (IsValid(LocalPlayerSubsystem))
-		{
-			FDSAuthenticationResult AuthResult = LocalPlayerSubsystem->GetAuthResult();
-			PortalManager->SignOut(AuthResult.AccessToken);
-		}
+		FDSAuthenticationResult AuthResult = LocalPlayerSubsystem->GetAuthResult();
+		PortalManager->SignOut(AuthResult.AccessToken);
 	}
 }
 
@@ -66,7 +67,19 @@ void UAccountDropdown_Expanded::SetSignOutButtonStyleTransparent()
 	Button_SignOut->SetStyle(Style);
 }
 
-
+UDSLocalPlayerSubsystem* UAccountDropdown_Expanded::GetLocalPlayerSubsystem()
+{
+	APlayerController* PlayerController = GetOwningPlayer();
+	if (IsValid(PlayerController) && IsValid(PlayerController->GetLocalPlayer()))
+	{
+		UDSLocalPlayerSubsystem* LocalPlayerSubsystem = PlayerController->GetLocalPlayer()->GetSubsystem<UDSLocalPlayerSubsystem>();
+		if (IsValid(LocalPlayerSubsystem))
+		{
+			return LocalPlayerSubsystem;
+		}
+	}
+	return nullptr;
+}
 
 
 

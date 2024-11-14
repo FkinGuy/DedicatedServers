@@ -53,5 +53,5 @@ private:
 
 	void SetSignOutButtonStyleTransparent();
 
-
+	UDSLocalPlayerSubsystem* GetLocalPlayerSubsystem();
 };
