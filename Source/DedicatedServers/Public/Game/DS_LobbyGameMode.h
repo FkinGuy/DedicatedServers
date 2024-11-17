@@ -17,14 +17,15 @@ class DEDICATEDSERVERS_API ADS_LobbyGameMode : public ADS_GameModeBase
 	GENERATED_BODY()
 public:
 	ADS_LobbyGameMode();
+	void CheckAndStartLobbyCountdown();
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnCountdownTimerFinished(ECountdownTimerType Type) override;
-	void CancelCountdown();
-	virtual void Logout(AController* Exiting) override;
 	virtual void InitSeamlessTravelPlayer(AController* NewController) override;
-
+	void CheckAndStopLobbyCountdown();
+	virtual void Logout(AController* Exiting) override;
+	
 	UPROPERTY()
 	ELobbyStatus LobbyStatus;
 
@@ -32,7 +33,8 @@ protected:
 	int32 MinPlayers;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSoftObjectPtr<UWorld> MapToTravelTo;
+	TSoftObjectPtr<UWorld> DestinationMap;
+	
 private:
 
 	UPROPERTY()

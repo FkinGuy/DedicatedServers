@@ -4,6 +4,7 @@
 #include "Game/DS_LobbyGameMode.h"
 #include "Game/DS_GameInstanceSubsystem.h"
 #include "DedicatedServers/DedicatedServers.h"
+#include "Kismet/GameplayStatics.h"
 
 ADS_LobbyGameMode::ADS_LobbyGameMode()
 {
@@ -16,11 +17,36 @@ ADS_LobbyGameMode::ADS_LobbyGameMode()
 void ADS_LobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
+	CheckAndStartLobbyCountdown();
+}
 
+void ADS_LobbyGameMode::InitSeamlessTravelPlayer(AController* NewController)
+{
+	Super::InitSeamlessTravelPlayer(NewController);
+	CheckAndStartLobbyCountdown();
+}
+
+void ADS_LobbyGameMode::Logout(AController* Exiting)
+{
+	Super::Logout(Exiting);
+	CheckAndStopLobbyCountdown();
+}
+
+void ADS_LobbyGameMode::CheckAndStartLobbyCountdown()
+{
 	if (GetNumPlayers() >= MinPlayers && LobbyStatus == ELobbyStatus::WaitingForPlayers)
 	{
 		LobbyStatus = ELobbyStatus::CountdownToSeamlessTravel;
 		StartCountdownTimer(LobbyCountdownTimer);
+	}
+}
+
+void ADS_LobbyGameMode::CheckAndStopLobbyCountdown()
+{
+	if (GetNumPlayers() - 1 < MinPlayers && LobbyStatus == ELobbyStatus::CountdownToSeamlessTravel)
+	{
+		LobbyStatus = ELobbyStatus::WaitingForPlayers;
+		StopCountdownTimer(LobbyCountdownTimer);
 	}
 }
 
@@ -38,30 +64,15 @@ void ADS_LobbyGameMode::OnCountdownTimerFinished(ECountdownTimerType Type)
 	if (Type == ECountdownTimerType::LobbyCountdown)
 	{
 		LobbyStatus = ELobbyStatus::SeamlessTravelling;
-		GetWorld()->ServerTravel(MapToTravelTo->GetMapName());
-	}
-}
-
-void ADS_LobbyGameMode::Logout(AController* Exiting)
-{
-	Super::Logout(Exiting);
-
-	CancelCountdown();
-}
-
-void ADS_LobbyGameMode::InitSeamlessTravelPlayer(AController* NewController)
-{
-	Super::InitSeamlessTravelPlayer(NewController);
-
-	CancelCountdown();
-}
-
-void ADS_LobbyGameMode::CancelCountdown()
-{
-	if (GetNumPlayers() - 1 < MinPlayers && LobbyStatus == ELobbyStatus::CountdownToSeamlessTravel)
-	{
-		LobbyStatus = ELobbyStatus::WaitingForPlayers;
-		StopCountdownTimer(LobbyCountdownTimer);
+		const FString MapName = DestinationMap.ToSoftObjectPath().GetAssetName();
+		if (GIsEditor)
+		{
+			UGameplayStatics::OpenLevelBySoftObjectPtr(this, DestinationMap);
+		}
+		else
+		{
+			GetWorld()->ServerTravel(MapName);
+		}
 	}
 }
 
@@ -108,3 +119,5 @@ void ADS_LobbyGameMode::SetServerParameters(FServerParameters& OutServerParamete
 	OutServerParameters.m_processId = FString::Printf(TEXT("%d"), GetCurrentProcessId());
 	UE_LOG(LogDedicatedServers, Log, TEXT("PID: %s"), *OutServerParameters.m_processId);
 }
+
+
