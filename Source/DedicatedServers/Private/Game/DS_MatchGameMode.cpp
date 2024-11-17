@@ -40,7 +40,7 @@ void ADS_MatchGameMode::OnCountdownTimerFinished(ECountdownTimerType Type)
 	if (Type == ECountdownTimerType::PostMatch)
 	{
 		MatchStatus = EMatchStatus::SeamlessTravelling;
-		
+		TrySeamlessTravel(LobbyMap);
 	}
 }
 

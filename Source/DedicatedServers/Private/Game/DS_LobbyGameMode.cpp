@@ -64,15 +64,7 @@ void ADS_LobbyGameMode::OnCountdownTimerFinished(ECountdownTimerType Type)
 	if (Type == ECountdownTimerType::LobbyCountdown)
 	{
 		LobbyStatus = ELobbyStatus::SeamlessTravelling;
-		const FString MapName = DestinationMap.ToSoftObjectPath().GetAssetName();
-		if (GIsEditor)
-		{
-			UGameplayStatics::OpenLevelBySoftObjectPtr(this, DestinationMap);
-		}
-		else
-		{
-			GetWorld()->ServerTravel(MapName);
-		}
+		TrySeamlessTravel(DestinationMap);
 	}
 }
 
