@@ -21,15 +21,7 @@ void ADS_GameModeBase::StartCountdownTimer(FCountdownTimerHandle& CountdownTimer
 
 	CountdownTimerHandle.TimerUpdateDelegate.BindWeakLambda(this, [&]()
 	{
-		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-		{
-			ADSPlayerController* DSPlayerController = Cast<ADSPlayerController>(Iterator->Get());
-			if (IsValid(DSPlayerController))
-			{
-				const float CountdownTimeLeft = CountdownTimerHandle.CountdownTime - GetWorldTimerManager().GetTimerElapsed(CountdownTimerHandle.TimerFinishedHandle);
-				DSPlayerController->Client_TimerUpdated(CountdownTimeLeft, CountdownTimerHandle.Type);
-			}
-		}
+		UpdateCountdownTimer(CountdownTimerHandle);
 	});
 
 	GetWorldTimerManager().SetTimer(
@@ -37,6 +29,7 @@ void ADS_GameModeBase::StartCountdownTimer(FCountdownTimerHandle& CountdownTimer
 		CountdownTimerHandle.TimerUpdateDelegate,
 		CountdownTimerHandle.CountdownUpdateInterval,
 		true);
+	UpdateCountdownTimer(CountdownTimerHandle);
 }
 
 void ADS_GameModeBase::StopCountdownTimer(FCountdownTimerHandle& CountdownTimerHandle)
@@ -59,6 +52,19 @@ void ADS_GameModeBase::StopCountdownTimer(FCountdownTimerHandle& CountdownTimerH
 		if (IsValid(DSPlayerController))
 		{
 			DSPlayerController->Client_TimerStopped(0.f, CountdownTimerHandle.Type);
+		}
+	}
+}
+
+void ADS_GameModeBase::UpdateCountdownTimer(const FCountdownTimerHandle& CountdownTimerHandle)
+{
+	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	{
+		ADSPlayerController* DSPlayerController = Cast<ADSPlayerController>(Iterator->Get());
+		if (IsValid(DSPlayerController))
+		{
+			const float CountdownTimeLeft = CountdownTimerHandle.CountdownTime - GetWorldTimerManager().GetTimerElapsed(CountdownTimerHandle.TimerFinishedHandle);
+			DSPlayerController->Client_TimerUpdated(CountdownTimeLeft, CountdownTimerHandle.Type);
 		}
 	}
 }
