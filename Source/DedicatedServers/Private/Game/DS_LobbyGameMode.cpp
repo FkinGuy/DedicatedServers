@@ -5,11 +5,64 @@
 #include "Game/DS_GameInstanceSubsystem.h"
 #include "DedicatedServers/DedicatedServers.h"
 
+ADS_LobbyGameMode::ADS_LobbyGameMode()
+{
+	bUseSeamlessTravel = true;
+	LobbyStatus = ELobbyStatus::WaitingForPlayers;
+	MinPlayers = 1;
+	LobbyCountdownTimer.Type = ECountdownTimerType::LobbyCountdown;
+}
+
+void ADS_LobbyGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+	if (GetNumPlayers() >= MinPlayers && LobbyStatus == ELobbyStatus::WaitingForPlayers)
+	{
+		LobbyStatus = ELobbyStatus::CountdownToSeamlessTravel;
+		StartCountdownTimer(LobbyCountdownTimer);
+	}
+}
+
 void ADS_LobbyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
 	InitGameLift();
+}
+
+void ADS_LobbyGameMode::OnCountdownTimerFinished(ECountdownTimerType Type)
+{
+	Super::OnCountdownTimerFinished(Type);
+
+	if (Type == ECountdownTimerType::LobbyCountdown)
+	{
+		LobbyStatus = ELobbyStatus::SeamlessTravelling;
+		GetWorld()->ServerTravel(MapToTravelTo->GetMapName());
+	}
+}
+
+void ADS_LobbyGameMode::Logout(AController* Exiting)
+{
+	Super::Logout(Exiting);
+
+	CancelCountdown();
+}
+
+void ADS_LobbyGameMode::InitSeamlessTravelPlayer(AController* NewController)
+{
+	Super::InitSeamlessTravelPlayer(NewController);
+
+	CancelCountdown();
+}
+
+void ADS_LobbyGameMode::CancelCountdown()
+{
+	if (GetNumPlayers() - 1 < MinPlayers && LobbyStatus == ELobbyStatus::CountdownToSeamlessTravel)
+	{
+		LobbyStatus = ELobbyStatus::WaitingForPlayers;
+		StopCountdownTimer(LobbyCountdownTimer);
+	}
 }
 
 void ADS_LobbyGameMode::InitGameLift()
