@@ -5,6 +5,7 @@
 #include "Game/DS_GameInstanceSubsystem.h"
 #include "DedicatedServers/DedicatedServers.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/DSPlayerController.h"
 
 ADS_LobbyGameMode::ADS_LobbyGameMode()
 {
@@ -30,6 +31,7 @@ void ADS_LobbyGameMode::Logout(AController* Exiting)
 {
 	Super::Logout(Exiting);
 	CheckAndStopLobbyCountdown();
+	RemovePlayerSession(Exiting);
 }
 
 void ADS_LobbyGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
@@ -40,6 +42,22 @@ void ADS_LobbyGameMode::PreLogin(const FString& Options, const FString& Address,
 	const FString Username = UGameplayStatics::ParseOption(Options, TEXT("Username"));
 
 	TryAcceptPlayerSession(PlayerSessionId, Username, ErrorMessage);
+}
+
+FString ADS_LobbyGameMode::InitNewPlayer(APlayerController* NewPlayerController, const FUniqueNetIdRepl& UniqueId, const FString& Options, const FString& Portal)
+{
+	FString InitializedString = Super::InitNewPlayer(NewPlayerController, UniqueId, Options, Portal);
+
+	const FString PlayerSessionId = UGameplayStatics::ParseOption(Options, TEXT("PlayerSessionId"));
+	const FString Username = UGameplayStatics::ParseOption(Options, TEXT("Username"));
+
+	if (ADSPlayerController* DSPlayerController = Cast<ADSPlayerController>(NewPlayerController); IsValid(DSPlayerController))
+	{
+		DSPlayerController->PlayerSessionId = PlayerSessionId;
+		DSPlayerController->Username = Username;
+	}
+
+	return InitializedString;
 }
 
 void ADS_LobbyGameMode::TryAcceptPlayerSession(const FString& PlayerSessionId, const FString& Username, FString& OutErrorMessage)
