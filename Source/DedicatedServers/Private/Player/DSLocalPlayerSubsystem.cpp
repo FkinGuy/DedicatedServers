@@ -3,22 +3,22 @@
 
 #include "Player/DSLocalPlayerSubsystem.h"
 
-#include "UI/Portal/PortalManager.h"
+#include "UI/Portal/Interfaces/PortalManagement.h"
 
-void UDSLocalPlayerSubsystem::InitializeTokens(const FDSAuthenticationResult& AuthResult, UPortalManager* Manager)
+void UDSLocalPlayerSubsystem::InitializeTokens(const FDSAuthenticationResult& AuthResult, TScriptInterface<IPortalManagement> PortalManagement)
 {
 	AuthenticationResult = AuthResult;
-	PortalManager = Manager;
+	PortalManagementInterface = PortalManagement;
 	SetRefreshTokenTimer();
 }
 
 void UDSLocalPlayerSubsystem::SetRefreshTokenTimer()
 {
 	UWorld* World = GetWorld();
-	if (IsValid(World))
+	if (IsValid(World) && IsValid(PortalManagementInterface.GetObject()))
 	{
 		FTimerDelegate RefreshDelegate;
-		RefreshDelegate.BindLambda([this](){ PortalManager->RefreshTokens(AuthenticationResult.RefreshToken); });
+		RefreshDelegate.BindLambda([this](){ PortalManagementInterface->RefreshTokens(AuthenticationResult.RefreshToken); });
 		World->GetTimerManager().SetTimer(RefreshTimer, RefreshDelegate, TokenRefreshInterval, false);
 	}
 }
