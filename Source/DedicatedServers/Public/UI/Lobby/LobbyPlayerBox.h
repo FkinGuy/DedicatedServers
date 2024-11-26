@@ -36,4 +36,8 @@ protected:
 	UFUNCTION()
 	void OnPlayerRemoved(const FLobbyPlayerInfo& PlayerInfo);
 
+private:
+
+	UPlayerLabel* FindPlayerLabel(const FString& Username);
 };
+
