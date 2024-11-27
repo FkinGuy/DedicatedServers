@@ -267,7 +267,7 @@ struct FDSMatchStats
 	GENERATED_BODY()
 
 	UPROPERTY()
-	int32 ScoredElims{};
+	int32 scoredElims{};
 
 	UPROPERTY()
 	int32 defeats{};
