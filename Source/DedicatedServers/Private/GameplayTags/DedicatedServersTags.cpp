@@ -18,4 +18,10 @@ namespace DedicatedServersTags
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(SignOut, "DedicatedServersTags.PortalAPI.SignOut", "Signs user out and invalidates tokens in Portal API")
 		
 	}
+
+	namespace GameStatsAPI
+	{
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(RecordMatchStats, "DedicatedServersTags.GameStatsAPI.RecordMatchStats", "Records the stats of a match in Game Stats API")
+		
+	}
 }
