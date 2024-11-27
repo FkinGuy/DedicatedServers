@@ -13,8 +13,8 @@
 void UGameStatsManager::RecordMatchStats(const FDSRecordMatchStatsInput& RecordMatchStatsInput)
 {
 	// if you want a JsonObject...
-	TSharedPtr<FJsonObject> JsonObject = MakeShared<FJsonObject>();
-	FJsonObjectConverter::UStructToJsonObject(FDSRecordMatchStatsInput::StaticStruct(), &RecordMatchStatsInput, JsonObject.ToSharedRef());
+	//TSharedPtr<FJsonObject> JsonObject = MakeShared<FJsonObject>();
+	//FJsonObjectConverter::UStructToJsonObject(FDSRecordMatchStatsInput::StaticStruct(), &RecordMatchStatsInput, JsonObject.ToSharedRef());
 
 	FString JsonString;
 	FJsonObjectConverter::UStructToJsonObjectString(FDSRecordMatchStatsInput::StaticStruct(), &RecordMatchStatsInput, JsonString);
