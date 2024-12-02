@@ -70,6 +70,7 @@ void UGameStatsManager::RetrieveMatchStats_Response(FHttpRequestPtr Request, FHt
 	if (!bWasSuccessful)
 	{
 		OnRetrieveMatchStatsResponseReceived.Broadcast(FDSRetrieveMatchStatsResponse());
+		RetrieveMatchStatsStatusMesssage.Broadcast(HTTPStatusMessages::SomethingWentWrong, false);
 		return;
 	}
 
@@ -80,6 +81,7 @@ void UGameStatsManager::RetrieveMatchStats_Response(FHttpRequestPtr Request, FHt
 		if (ContainsErrors(JsonObject))
 		{
 			OnRetrieveMatchStatsResponseReceived.Broadcast(FDSRetrieveMatchStatsResponse());
+			RetrieveMatchStatsStatusMesssage.Broadcast(HTTPStatusMessages::SomethingWentWrong, false);
 			return;
 		}
 
@@ -88,5 +90,6 @@ void UGameStatsManager::RetrieveMatchStats_Response(FHttpRequestPtr Request, FHt
 		RetrieveMatchStatsResponse.Dump();
 
 		OnRetrieveMatchStatsResponseReceived.Broadcast(RetrieveMatchStatsResponse);
+		RetrieveMatchStatsStatusMesssage.Broadcast(TEXT(""), false);
 	}
 }
