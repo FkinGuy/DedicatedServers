@@ -44,6 +44,7 @@ void UGameStatsManager::RecordMatchStats_Response(FHttpRequestPtr Request, FHttp
 
 void UGameStatsManager::RetrieveMatchStats()
 {
+	RetrieveMatchStatsStatusMesssage.Broadcast(TEXT("Retrieving match stats..."), false);
 	UDSLocalPlayerSubsystem* LocalPlayerSubsystem = GetDSLocalPlayerSubsystem();
 	if (!IsValid(LocalPlayerSubsystem)) return;
 	check(APIData);
@@ -66,5 +67,26 @@ void UGameStatsManager::RetrieveMatchStats()
 
 void UGameStatsManager::RetrieveMatchStats_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
-	
+	if (!bWasSuccessful)
+	{
+		OnRetrieveMatchStatsResponseReceived.Broadcast(FDSRetrieveMatchStatsResponse());
+		return;
+	}
+
+	TSharedPtr<FJsonObject> JsonObject;
+	TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+	if (FJsonSerializer::Deserialize(JsonReader, JsonObject))
+	{
+		if (ContainsErrors(JsonObject))
+		{
+			OnRetrieveMatchStatsResponseReceived.Broadcast(FDSRetrieveMatchStatsResponse());
+			return;
+		}
+
+		FDSRetrieveMatchStatsResponse RetrieveMatchStatsResponse;
+		FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), &RetrieveMatchStatsResponse);
+		RetrieveMatchStatsResponse.Dump();
+
+		OnRetrieveMatchStatsResponseReceived.Broadcast(RetrieveMatchStatsResponse);
+	}
 }
