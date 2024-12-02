@@ -83,7 +83,11 @@ enum class ESpecialElimType : uint16
 	FirstBlood      = 1 << 6,    // 00000000 01000000
 	GainedTheLead   = 1 << 7,    // 00000000 10000000
 	TiedTheLeader   = 1 << 8,    // 00000001 00000000
-	LostTheLead   = 1 << 9     // 00000010 00000000
+	LostTheLead   = 1 << 9,      // 00000010 00000000
+	Defeats = 1 << 10,           // 00000100 00000000
+	ScoredElims = 1 << 11,       // 00001000 00000000
+	Hits = 1 << 12,              // 00010000 00000000
+	Misses = 1 << 13             // 00100000 00000000
 };
 
 ENUM_CLASS_FLAGS(ESpecialElimType)

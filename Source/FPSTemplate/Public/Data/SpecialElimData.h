@@ -19,6 +19,9 @@ struct FSpecialElimInfo
 	FString ElimMessage = FString();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FString CareerPageAchievementName = FString();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UTexture2D> ElimIcon = nullptr;
 
 	UPROPERTY(BlueprintReadOnly)
