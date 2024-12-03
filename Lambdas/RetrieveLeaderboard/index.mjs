@@ -8,7 +8,8 @@ export const handler = async (event) => {
   });
   try {
     const scanResponse = await dynamoDBClient.send(scanCommand);
-    return scanResponse.Items.map(item => unmarshall(item));
+    const leaderboard = scanResponse.Items.map(item => unmarshall(item));
+    return { Leaderboard: leaderboard }
   } catch(error) {
     return error;
   }
