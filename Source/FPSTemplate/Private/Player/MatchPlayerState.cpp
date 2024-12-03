@@ -4,6 +4,8 @@
 #include "Player/MatchPlayerState.h"
 
 #include "Data/SpecialElimData.h"
+#include "Game/MatchGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/HTTP/HTTPRequestTypes.h"
 #include "ShooterTypes/ShooterTypes.h"
 #include "UI/Elims/SpecialElimWidget.h"
@@ -30,6 +32,12 @@ AMatchPlayerState::AMatchPlayerState()
 void AMatchPlayerState::OnMatchEnded(const FString& Username)
 {
 	Super::OnMatchEnded(Username);
+
+	AMatchGameState* MatchGameState = Cast<AMatchGameState>(UGameplayStatics::GetGameState(this));
+	if (IsValid(MatchGameState))
+	{
+		bWinner = MatchGameState->GetLeader() == this;
+	}
 
 	FDSRecordMatchStatsInput RecordMatchStatsInput;
 	RecordMatchStatsInput.username = Username;
