@@ -142,6 +142,7 @@ void UGameStatsManager::UpdateLeaderboard_Response(FHttpRequestPtr Request, FHtt
 
 void UGameStatsManager::RetrieveLeaderboard()
 {
+	RetrieveLeaderboardStatusMessage.Broadcast(TEXT("Retrieving Leaderboard..."), false);
 	TSharedRef<IHttpRequest> Request = FHttpModule::Get().CreateRequest();
 	const FString ApiUrl = APIData->GetAPIEndpoint(DedicatedServersTags::GameStatsAPI::RetrieveLeaderboard);
 	Request->OnProcessRequestComplete().BindUObject(this, &UGameStatsManager::RetrieveLeaderboard_Response);
@@ -155,6 +156,7 @@ void UGameStatsManager::RetrieveLeaderboard_Response(FHttpRequestPtr Request, FH
 {
 	if (!bWasSuccessful)
 	{
+		RetrieveLeaderboardStatusMessage.Broadcast(HTTPStatusMessages::SomethingWentWrong, false);
 		UE_LOG(LogDedicatedServers, Error, TEXT("Failed to retrieve leaderboard."))
 		return;
 	}
@@ -164,6 +166,11 @@ void UGameStatsManager::RetrieveLeaderboard_Response(FHttpRequestPtr Request, FH
 	TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	if (FJsonSerializer::Deserialize(JsonReader, JsonObject))
 	{
+		if (ContainsErrors(JsonObject))
+		{
+			RetrieveLeaderboardStatusMessage.Broadcast(HTTPStatusMessages::SomethingWentWrong, false);
+			return;
+		}
 		const TArray<TSharedPtr<FJsonValue>>* LeaderboardJsonArray;
 		if (JsonObject->TryGetArrayField(TEXT("Leaderboard"), LeaderboardJsonArray))
 		{
@@ -186,6 +193,7 @@ void UGameStatsManager::RetrieveLeaderboard_Response(FHttpRequestPtr Request, FH
 		}
 	}
 	OnRetrieveLeaderboard.Broadcast(LeaderboardItems);
+	RetrieveLeaderboardStatusMessage.Broadcast(TEXT(""), false);
 }
 
 

@@ -49,6 +49,10 @@ void ULeaderboardPage::CalculateLeaderboardPlaces(TArray<FDSLeaderboardItem>& Ou
 	}
 }
 
+void ULeaderboardPage::SetStatusMessage(const FString& StatusMessage, bool bShouldResetWidgets)
+{
+	TextBlock_StatusMessage->SetText(FText::FromString(StatusMessage));
+}
 
 
 
