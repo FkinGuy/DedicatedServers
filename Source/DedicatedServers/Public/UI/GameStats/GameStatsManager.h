@@ -19,14 +19,19 @@ class DEDICATEDSERVERS_API UGameStatsManager : public UHTTPRequestManager
 public:
 	void RecordMatchStats(const FDSRecordMatchStatsInput& RecordMatchStatsInput);
 	void RetrieveMatchStats();
+	void UpdateLeaderboard(const TArray<FString>& WinnerUsernames);
 
 	UPROPERTY()
 	FOnRetrieveMatchStatsResponseReceived OnRetrieveMatchStatsResponseReceived;
 
 	UPROPERTY()
 	FAPIStatusMessage RetrieveMatchStatsStatusMesssage;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAPIRequestSucceeded OnUpdateLeaderboardSucceeded;
 private:
 
 	void RecordMatchStats_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 	void RetrieveMatchStats_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	void UpdateLeaderboard_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 };
