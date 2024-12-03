@@ -70,6 +70,11 @@ bool AMatchGameState::IsTiedForTheLead(AMatchPlayerState* PlayerState)
 	return false;
 }
 
+TArray<AMatchPlayerState*> AMatchGameState::GetLeaders() const
+{
+	return Leaders;
+}
+
 void AMatchGameState::BeginPlay()
 {
 	Super::BeginPlay();

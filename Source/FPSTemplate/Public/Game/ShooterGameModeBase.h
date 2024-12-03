@@ -27,4 +27,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Respawning")
 	float RespawnTime;
+protected:
+	virtual void OnMatchEnded() override;
 };
