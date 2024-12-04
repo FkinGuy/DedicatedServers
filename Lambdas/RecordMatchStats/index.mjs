@@ -1,6 +1,6 @@
 import { CognitoIdentityProviderClient, AdminGetUserCommand } from "@aws-sdk/client-cognito-identity-provider";
 import { DynamoDBClient, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
-import { marshall } from "@aws-sdk/util-dynamodb";
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
 export const handler = async (event) => {
   const cognitoIdentityProviderClient = new CognitoIdentityProviderClient( { region: process.env.REGION } );
@@ -22,36 +22,29 @@ export const handler = async (event) => {
     };
 
     const getItemCommand = new GetItemCommand(getItemInput);
-    const existingStats = await dynamoDBClient.send(getItemCommand);
+    let statsFromDB = await dynamoDBClient.send(getItemCommand);
 
-    let matchStats = event.matchStats;
+    const eventMatchStats = event.matchStats;
 
-    for (const key in matchStats) {
-      const value = matchStats[key];
-      if (existingStats[key] !== undefined) {
-        matchStats[key] += existingStats[key];
+    for (const key in eventMatchStats) {
+      if (statsFromDB[key] !== undefined) {
+        statsFromDB[key] += eventMatchStats[key];
+      } else {
+        statsFromDB[key] = eventMatchStats[key];
       }
     }
 
     const putItemInput = {
       TableName: "Players",
-      Item: marshall( 
-        {
-          databaseid: sub,
-          username: event.username,
-          "email": email,
-          ...matchStats,
-        }
-      )
+      Item: marshall( { ...statsFromDB } )
     };
     const putItemCommand = new PutItemCommand(putItemInput);
     await dynamoDBClient.send(putItemCommand);
-    
+
     return {
       statusCode: 200,
-      body: `Updated match stats for ${event.username}`,
-    }
-
+      body: `Updated match stats for ${event.username}`
+    };
   } catch(error) {
     return error;
   }
